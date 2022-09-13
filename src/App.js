@@ -1,111 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
+import Fliters from "./components/Fliters";
+import TaskInput from "./components/TaskInput";
+import TodoList from "./components/TodoList";
 
 const App = () => {
 	const [task, setTask] = useState("");
 	const [todos, setTodos] = useState([]);
 	const [displayStatus, setDisplayedStatus] = useState("All");
 
-	function updateTaskStatus(event, id) {
-		const updatedTask = {
-			...todos[id],
-			active: !todos[id].active,
-		};
+	const handleDisplayStatus = (status) => setDisplayedStatus(status);
+	const handleTask = (e) => setTask(e.target.value);
 
-		todos.splice(todos.indexOf(todos[id]), 1, updatedTask);
-		setTodos(todos);
-
-		updateTaskStyle(event, id);
-	}
-
-	function updateTaskStyle(event, id) {
-		if (!todos[id].active) {
-			event.target.firstChild.checked = true;
-			event.currentTarget.style.textDecoration = "line-through";
-		} else {
-			event.target.firstChild.checked = null;
-			event.currentTarget.style.textDecoration = null;
-		}
-	}
-
-	function updateCheckbox(event, id) {
-		console.log(event, id);
-	}
-
-	function displayAll(list) {
-		return (
-			<li
-				onClick={(e) => updateTaskStatus(e, list.id)}
-				className={!list.active ? "complete" : ""}
-			>
-				{!list.active && (
-					<input
-						type="checkbox"
-						defaultChecked
-						onClick={(e) => updateCheckbox(e, list.id)}
-						disabled
-						className="checkbox-active"
-					/>
-				)}
-				{list.active && (
-					<input
-						type="checkbox"
-						onClick={(e) => updateCheckbox(e, list.id)}
-						disabled
-					/>
-				)}
-				{list.content}
-			</li>
-		);
-	}
-
-	function displayActive(list) {
-		if (list.active) {
-			return (
-				<li
-					className={!list.active ? "complete" : ""}
-					onClick={(e) => updateTaskStatus(e, list.id)}
-				>
-					<input
-						type="checkbox"
-						disabled
-						onClick={(e) => updateCheckbox(e, list.id)}
-					/>
-					{list.content}
-				</li>
-			);
-		}
-	}
-
-	function displayCompleted(list) {
-		if (!list.active) {
-			return (
-				<li className="complete" onClick={(e) => updateTaskStatus(e, list.id)}>
-					<input type="checkbox" defaultChecked disabled />
-					{list.content}
-				</li>
-			);
-		}
-	}
-
-	const processedList = todos.map((todo) => {
-		switch (displayStatus) {
-			case "All":
-				return displayAll(todo);
-			case "Active":
-				return displayActive(todo);
-			case "Completed":
-				return displayCompleted(todo);
-			default:
-				break;
-		}
-	});
-
-	function handleDisplayStatus(status) {
-		setDisplayedStatus(status);
-	}
-
-	function addNewTask() {
+	const addNewTask = () => {
 		const newTask = {
 			id: todos.length,
 			content: task,
@@ -113,82 +20,44 @@ const App = () => {
 		};
 
 		setTodos(todos.concat(newTask));
-		console.log(todos);
 		setTask("");
-	}
-
-	function handleTask(e) {
-		setTask(e.target.value);
-	}
+	};
 
 	// delete completed tasks
-	function deleteTodos() {
+	const deleteTodos = () => {
 		// save only active tasks
 		const activeTasks = todos.filter((task) => task.active === true);
 		setTodos(activeTasks);
-	}
+	};
 
-	// useEffect(() => {}, [todos]);
+	const propsCollections = {
+		task,
+		todos,
+		setTodos,
+		addNewTask,
+		handleTask,
+		deleteTodos,
+		displayStatus,
+		setDisplayedStatus,
+		handleDisplayStatus,
+	};
+
 	return (
 		<Container>
 			<h1 className="title">#todo</h1>
-			<div className="filters">
-				<h1
-					onClick={() => handleDisplayStatus("All")}
-					style={{
-						borderBottom: `${
-							displayStatus === "All" ? "3px solid #2F80ED" : ""
-						}`,
-					}}
-				>
-					All
-				</h1>
-				<h1
-					onClick={() => handleDisplayStatus("Active")}
-					style={{
-						borderBottom: `${
-							displayStatus === "Active" ? "3px solid #2F80ED" : ""
-						}`,
-					}}
-				>
-					Active
-				</h1>
-				<h1
-					onClick={() => handleDisplayStatus("Completed")}
-					style={{
-						borderBottom: `${
-							displayStatus === "Completed" ? "3px solid #2F80ED" : ""
-						}`,
-					}}
-				>
-					Completed
-				</h1>
-			</div>
-			<div className="input">
-				<input
-					type="text"
-					value={task}
-					onChange={(e) => handleTask(e)}
-					placeholder="Add new task"
-				/>
-				<button onClick={addNewTask}>Add</button>
-			</div>
-			<div className="list">
-				{processedList}
-				{displayStatus === "Completed" && (
-					<button onClick={deleteTodos}>delete</button>
-				)}
-			</div>
+			<Fliters {...propsCollections} />
+			<TaskInput {...propsCollections} />
+			<TodoList {...propsCollections} />
 		</Container>
 	);
 };
 
 const Container = styled.div`
-	height: 100vh;
 	width: 40vw;
+	height: 100vh;
 	display: flex;
-	flex-direction: column;
 	align-items: center;
+	flex-direction: column;
 
 	.title {
 		font-family: "Raleway", sans-serif;
@@ -199,82 +68,73 @@ const Container = styled.div`
 	}
 
 	.filters {
-		margin-top: 3rem;
-		height: 2rem;
-		background-color: transparent;
 		width: 100%;
+		height: 2rem;
 		display: flex;
+		margin-top: 3rem;
 		justify-content: center;
 		justify-content: space-evenly;
 
 		h1 {
 			width: 5rem;
+			cursor: pointer;
 			font-size: 0.9rem;
 			text-align: center;
-			cursor: pointer;
 			font-family: "Montserrat", sans-serif;
-			/* padding-bottom: 20px; */
 		}
 	}
 
 	.input {
-		/* background-color: rebeccapurple; */
-		margin-bottom: 1rem;
 		width: 100%;
 		display: flex;
-		justify-content: space-around;
 		margin-top: 2rem;
+		margin-bottom: 1rem;
+		justify-content: space-around;
 		input {
+			width: 60%;
 			outline: none;
+			font-weight: 400;
+			font-style: normal;
+			border-radius: 5px;
 			padding: 0.8rem 2rem;
 			border: 1px solid #bdbdbd;
-			border-radius: 5px;
-			width: 60%;
 			font-family: "Montserrat";
-			font-style: normal;
-			font-weight: 400;
-			/* font-size: 14px; */
-			/* line-height: 17px; */
 		}
 		button {
-			background-color: #2f80ed;
-			box-shadow: 0px 2px 6px rgba(127, 177, 243, 0.4);
+			border: none;
+			outline: none;
+			color: #ffffff;
+			font-weight: 600;
+			line-height: 17px;
+			font-style: normal;
 			border-radius: 5px;
 			padding: 0.6rem 2rem;
-			outline: none;
-			border: none;
-			color: #ffffff;
+			background-color: #2f80ed;
 			font-family: "Montserrat";
-			font-style: normal;
-			font-weight: 600;
-			/* font-size: 14px; */
-			line-height: 17px;
+			box-shadow: 0px 2px 6px rgba(127, 177, 243, 0.4);
 		}
 	}
 
 	.list {
-		/* background-color: rebeccapurple; */
 		height: 100%;
 		width: 100%;
 		position: relative;
 
 		li {
-			/* background-color: rebeccapurple; */
 			height: 2rem;
 			display: flex;
-			align-items: center;
-			/* flex-direction: ; */
-			text-transform: capitalize;
-			font-size: 1.1rem;
 			padding: 0.5rem;
 			cursor: pointer;
+			font-size: 1.1rem;
+			align-items: center;
+			text-transform: capitalize;
 
 			input {
 				size: 2rem;
-				transform: scale(1.4);
-				margin-right: 1rem;
-				background-color: rebeccapurple;
 				cursor: pointer;
+				margin-right: 1rem;
+				transform: scale(1.4);
+				background-color: rebeccapurple;
 			}
 		}
 		button {
@@ -289,7 +149,6 @@ const Container = styled.div`
 			cursor: pointer;
 			font-style: normal;
 			font-weight: 600;
-			/* font-size: 12px; */
 			border-radius: 5px;
 			line-height: 15px;
 		}
@@ -297,25 +156,6 @@ const Container = styled.div`
 		.complete {
 			text-decoration: line-through;
 		}
-
-		.uncomplete {
-			text-decoration: none;
-		}
-
-		.checkbox-active {
-			/* appearance: none; */
-			width: 12px;
-			height: 12px;
-			background-color: rebeccapurple;
-			color: red;
-			/* width: 24px; */
-			/* height: 24px; */
-			/* background: rebeccapurple; */
-		}
-
-		/* .checkbox-active::after{
-			content: "\f00c"
-		} */
 	}
 `;
 export default App;

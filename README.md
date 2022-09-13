@@ -8,11 +8,11 @@
 
 <div align="center">
   <h3>
-    <a href="https://{your-demo-link.your-domain}">
+    <a href="https://todo-app-kappa-eight.vercel.app/">
       Demo
     </a>
     <span> | </span>
-    <a href="https://{your-url-to-the-solution}">
+    <a href="https://github.com/karabo-r/todo-app">
       Solution
     </a>
     <span> | </span>
@@ -42,7 +42,7 @@
 
 
 - Where can I see your demo?
-  - The complete demo is hosted on Vercel. Link to the project.
+  - The complete demo is hosted on Vercel. [Link to the project](https://todo-app-kappa-eight.vercel.app/).
 - What was your experience?
   - I've never done a todo app before which is funny since todo apps are what most developers start out with when trying to understand CRUD. 🎊
 

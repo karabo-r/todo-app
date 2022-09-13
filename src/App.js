@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import Contact from "./components/Contact";
 import Fliters from "./components/Fliters";
 import TaskInput from "./components/TaskInput";
 import TodoList from "./components/TodoList";
@@ -48,6 +49,7 @@ const App = () => {
 			<Fliters {...propsCollections} />
 			<TaskInput {...propsCollections} />
 			<TodoList {...propsCollections} />
+			<Contact />
 		</Container>
 	);
 };
@@ -156,6 +158,10 @@ const Container = styled.div`
 		.complete {
 			text-decoration: line-through;
 		}
+	}
+
+	@media only screen and (max-width: 600px) {
+		width: 100%;
 	}
 `;
 export default App;

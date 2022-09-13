@@ -1,5 +1,3 @@
-import React from "react";
-
 const TodoList = ({ todos, setTodos, displayStatus, deleteTodos }) => {
 	function updateTaskStatus(event, id) {
 		const updatedTask = {

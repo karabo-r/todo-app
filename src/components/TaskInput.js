@@ -1,5 +1,3 @@
-import React from "react";
-
 const TaskInput = ({ handleTask, addNewTask, task }) => {
 	return (
 		<div className="input">
